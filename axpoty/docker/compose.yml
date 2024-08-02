@@ -1,6 +1,7 @@
+---
 services:
   wordpress:
-    build: .  # Build the WordPress image from the Dockerfile in the current directory
+    image: wordpress:php8.3-fpm-alpine
     container_name: wordpress
     ports:
       - 80:80
@@ -11,7 +12,7 @@ services:
 
   mariadb:
     image: mariadb:11.2
-    container_name: db
+    container_name: mariadb 
     environment:
       MARIADB_ROOT_PASSWORD: 1234  # Set the root password for MariaDB (will be reset by init script)
     volumes:
