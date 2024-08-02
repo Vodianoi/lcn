@@ -1,7 +1,7 @@
 ---
 services:
   wordpress:
-    image: wordpress:php8.3-fpm-alpine
+    image: wordpress:php8.3-apache
     container_name: wordpress
     ports:
       - 80:80
@@ -9,10 +9,12 @@ services:
     networks:
       - frontend
       - backend
+    logging:
+      driver: syslog
 
   mariadb:
     image: mariadb:11.2
-    container_name: mariadb 
+    container_name: mariadb
     environment:
       MARIADB_ROOT_PASSWORD: 1234  # Set the root password for MariaDB (will be reset by init script)
     volumes:
