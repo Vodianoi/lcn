@@ -3,8 +3,6 @@ services:
   wordpress:
     image: wordpress:php8.3-apache
     container_name: wordpress
-    ports:
-      - 80:80
     hostname: wordpress.local  # Set the hostname for the WordPress container
     networks:
       - frontend
@@ -26,8 +24,6 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.1
     container_name: phpmyadmin
-    ports:
-      - 8080:80  # Map port 8080 on the host to port 80 in the container
     environment:
       - PMA_ARBITRARY=1  # Allow arbitrary server connections
       - PMA_HOST=mariadb  # Set the default server to 'mariadb'
@@ -38,12 +34,30 @@ services:
       - frontend
       - backend
 
+  npm:
+    image: jc21/nginx-proxy-manager:github-pr-3789
+    container_name: npm
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - web
+      - frontend
+
 volumes:
   mariadb-data:  # Define the Docker volume for MariaDB data
 
 networks:
+  web:
+    name: web-network
   frontend:
     name: frontend-network  # Name the frontend network 'frontend-network'
+    internal: true
   backend:
     name: backend-network  # Name the backend network 'backend-network'
     internal: true  # Make the backend network internal (not accessible from outside Docker)
